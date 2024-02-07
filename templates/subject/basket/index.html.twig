@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Basket-ball{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+  <br>
+  <br><h2 class="main_title">Bienvenue sur mon forum !</h2>
+  <br> 
+  <h3 class="txt">Voici ce qui peut vous intéresser au sujet du {{ basket.name }}</h3>
+  <img src="{{ asset('img/nba.png') }}" alt="Logo nba" class="logonba">
+  <br>
+</div>
+<br>
+<a href="{{ path('app_home') }}">Home</a>
+{% endblock %}
