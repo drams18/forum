@@ -10,11 +10,21 @@
 
 <div class="example-wrapper">
   <br>
-  <br><h2 class="main_title">Bienvenue sur mon forum !</h2>
-  <br> 
-  <h3 class="txt">Voici ce qui peut vous intéresser au sujet du {{ basket.name }}</h3>
-  <img src="{{ asset('img/nba.png') }}" alt="Logo nba" class="logonba">
   <br>
+  <h2 class="main_title">Bienvenue sur mon forum !</h2>
+  <br> 
+  <h3 class="txt">Je vous propose 5 sujets intéressants au sujet de la {{ subject.name }}</h3>
+  <br>
+  <a href="{{ path('app_basket_story') }}"> - L'histoire de la création de la NBA.</a>
+  <br>
+  <a href="{{ path('app_basket_lebron') }}"> - Lebron James :considéré meilleur joueur de l'histoire </a>
+  <br>
+  <a href="{{ path('app_basket_mvp') }}"> - Les MVP de cette année</a>
+  <br>
+  <a href="{{ path('app_basket_awards') }}"> - La cérémonie des Awards 2023</a>
+  <br>
+  <a href="{{ path('app_basket_rookies') }}"> - Les Rookies à surveiller de près cette saison.</a>
+  
 </div>
 <br>
 <a href="{{ path('app_home') }}">Home</a>

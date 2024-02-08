@@ -21,8 +21,32 @@ app_subject:
     controller: App\Controller\SubjectController::subject
 
 app_basket:
+    path: /basketcreate
+    controller: App\Controller\BasketController::create
+
+app_basket_main:
     path: /basket
     controller: App\Controller\BasketController::basket
+
+app_basket_lebron:
+    path: /basket/lebron
+    controller: App\Controller\BasketController::lebron
+
+app_basket_story:
+    path: /basket/story
+    controller: App\Controller\BasketController::story
+
+app_basket_mvp:
+    path: /basket/mvp
+    controller: App\Controller\BasketController::mvp
+
+app_basket_awards:
+    path: /basket/awards
+    controller: App\Controller\BasketController::awards
+
+app_basket_rookies:
+    path: /basket/rookies
+    controller: App\Controller\BasketController::rookies
 
 app_movies:
     path: /movies
