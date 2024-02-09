@@ -15,14 +15,17 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
+    private $passwordHasher;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(EmailVerifier $emailVerifier, UserPasswordHasherInterface $passwordHasher, private ManagerRegistry $doctrine)
     {
         $this->emailVerifier = $emailVerifier;
+        $this->passwordHasher = $passwordHasher;
     }
 
     #[Route('/register', name: 'app_register')]
@@ -33,7 +36,8 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
+            $user->setRoles(['ROLE_USER']);
+
             $user->setPassword(
                 $userPasswordHasher->hashPassword(
                     $user,
@@ -41,8 +45,7 @@ class RegistrationController extends AbstractController
                 )
             );
 
-            $user->setRoles(['ROLE_USER']);
-
+            $entityManager = $this->doctrine->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 

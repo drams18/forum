@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
+    public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -19,12 +19,9 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // $password = $request->request->get('_password');
-        // dump($password);
-
         return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
             'error' => $error,
+            'last_username' => $lastUsername,
         ]);
     }
 
