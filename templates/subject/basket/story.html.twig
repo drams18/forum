@@ -2,7 +2,6 @@
 
 {% block title %} {{ story.name }}{% endblock %}
 
-
 {% block body %}
 
 <head>
@@ -10,10 +9,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Création de la NBA</title>
 </head>
-    <h1>{{  story.name  }}</h1>
-    <p>{{  story.description }}</p>
-    <p>LeBron James est considéré comme l'un des meilleurs joueurs de basketball de tous les temps.</p>
+    <p>{{ story.name }}</p>
+    <br>
+    <button><a href="#drams">Répondre à ce sujet</a></button>
+    <br><br><br><br><br><br><br>
+    <section id="drams">
+        <br>
 
-<a href="{{ path('app_home') }}">Home</a>
+        {% if app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ app.flashes('success')[0] }}
+            </div>
+        {% endif %}
+
+        {{ form_errors(responseForm) }}
+
+        {{ form_start(responseForm) }}
+        {{ form_row(responseForm, { label: 'Répondre : ' }) }}
+        <br>
+        <button type="submit" class="btn">Poster la réponse</button>
+        <br>
+        {{ form_end(responseForm) }}
+    </section>
+    <br><br><a href="{{ path('app_home') }}">Home</a>
 
 {% endblock %}

@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Basket;
+use App\Entity\Responses;
 use App\Entity\Subject;
+use App\Form\ResponseFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -65,8 +68,30 @@ class BasketController extends AbstractController
     }
 
     #[Route('/basket/story', name: 'app_basket_story')]
-    public function story(EntityManagerInterface $entityManager): Response
+    public function story(Request $request,EntityManagerInterface $entityManager): Response
     {
+        $response = new Responses();
+        $form = $this->createForm(ResponseFormType::class, $response);
+
+        $form->handleRequest($request);
+
+        // Vérifier si le formulaire a été soumis et s'il est valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Récupérer l'utilisateur actuellement connecté
+            $user = $this->getUser();
+
+            // Définir l'utilisateur et la date de création de la réponse
+            $response->setUser($user);
+            $response->setCreatedAt(new \DateTimeImmutable());
+
+            // Enregistrer les données dans la base de données
+            $entityManager->persist($response);
+            $entityManager->flush();
+
+            // Redirection vers une autre page ou affichage d'un message de succès
+            $this->addFlash('success', 'Votre réponse a bien été prise en compte.');
+        }
+
         // Récupérez le panier de LeBron James depuis la base de données
         $storyBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
 
@@ -78,6 +103,7 @@ class BasketController extends AbstractController
         // Rendre le template Twig pour afficher les détails du panier de LeBron James
         return $this->render('subject/basket/story.html.twig', [
             'story' => $storyBasket,
+            'responseForm' => $form->createView(),
         ]);
     }
 
@@ -132,7 +158,6 @@ class BasketController extends AbstractController
             'rookies' => $rookiesBasket,
         ]);
     }
-
 
     
     // #[Route('/basketcreate', name: 'app_basket')]
