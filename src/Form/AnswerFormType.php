@@ -2,24 +2,30 @@
 
 namespace App\Form;
 
+use App\Entity\Answer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
-class ResponseFormType extends AbstractType
+class AnswerFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder;
+        $builder
+            ->add('content', TextareaType::class, [
+                // Options éventuelles pour le champ
+            ])
 
+            ->add('subject', TextareaType::class, [
+                // Options éventuelles pour le champ
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            // Configuration de la liaison du formulaire à une entité ou une classe de données
-            //'data_class' => VotreClasse::class,
+            'data_class' => Answer::class
         ]);
     }
 }

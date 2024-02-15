@@ -15,6 +15,15 @@ class SubjectController extends AbstractController
     #[Route('/subject', name: 'app_subject')]
     public function subject(EntityManagerInterface $entityManager): Response
     {
+
+        // Vérifier si l'utilisateur est connecté
+        $user = $this->getUser();
+        if (!$user) {
+            // Redirection vers la page de connexion ou affichage d'un message d'erreur
+            $this->addFlash('error', 'Vous devez être connecté pour accéder au forum.');
+            return $this->redirectToRoute('app_login'); // Adapter en fonction de votre configuration
+        }
+
         // Vérifiez s'il existe déjà des sujets enregistrés dans la base de données
         $subjectRepository = $entityManager->getRepository(Subject::class);
         $existingSubjects = $subjectRepository->findAll();

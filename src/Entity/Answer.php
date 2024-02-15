@@ -2,40 +2,29 @@
 
 namespace App\Entity;
 
+use App\Repository\AnswerRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\User;
 
-/**
- * @ORM\Entity(repositoryClass=ResponsesRepository::class)
- */
-class Responses
+#[ORM\Entity(repositoryClass: AnswerRepository::class)]
+
+class Answer
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type : "integer")]
     private ?int $id = null;
 
-    /**
-     * @ORM\Column(length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     protected ?string $content = null;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     */
+    #[ORM\Column(type: "datetime_immutable")]
     protected ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
-    /**
-     * @ORM\Column(length=255)
-     */
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $subject = null;
 
     public function getId(): ?int

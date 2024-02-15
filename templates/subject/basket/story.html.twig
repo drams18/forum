@@ -12,24 +12,35 @@
     <p>{{ story.name }}</p>
     <br>
     <button><a href="#drams">Répondre à ce sujet</a></button>
-    <br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br>
     <section id="drams">
         <br>
 
-        {% if app.flashes('success') %}
+        {# {% if app.flashes('success') %}
             <div class="alert alert-success" role="alert">
                 {{ app.flashes('success')[0] }}
             </div>
-        {% endif %}
+        {% endif %} #}
 
         {{ form_errors(responseForm) }}
 
+        <form action="" method="post">
         {{ form_start(responseForm) }}
-        {{ form_row(responseForm, { label: 'Répondre : ' }) }}
+
+        {{ form_row(responseForm.subject, {
+            'label': 'Titre :'
+        }) }}
+
+        {{ form_row(responseForm.content, {
+            'label': 'Message :'
+        }) }}
         <br>
         <button type="submit" class="btn">Poster la réponse</button>
-        <br>
+        <br> 
+
+        </form>
         {{ form_end(responseForm) }}
+
     </section>
     <br><br><a href="{{ path('app_home') }}">Home</a>
 

@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Answer;
 use App\Entity\Basket;
-use App\Entity\Responses;
 use App\Entity\Subject;
-use App\Form\ResponseFormType;
+use App\Form\AnswerFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,6 +53,7 @@ class BasketController extends AbstractController
     #[Route('/basket/lebron', name: 'app_basket_lebron')]
     public function lebron(EntityManagerInterface $entityManager): Response
     {
+        
         // Récupérez le panier de LeBron James depuis la base de données
         $lebronBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'LeBron James']);
 
@@ -68,28 +69,36 @@ class BasketController extends AbstractController
     }
 
     #[Route('/basket/story', name: 'app_basket_story')]
-    public function story(Request $request,EntityManagerInterface $entityManager): Response
+    public function story(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $response = new Responses();
-        $form = $this->createForm(ResponseFormType::class, $response);
+        $answer = new Answer();
+        $form = $this->createForm(AnswerFormType::class, $answer);
 
         $form->handleRequest($request);
 
+        // Vérifier si l'utilisateur est connecté
+        $user = $this->getUser();
+        if (!$user) {
+            // Redirection vers la page de connexion ou affichage d'un message d'erreur
+            $this->addFlash('error', 'Vous devez être connecté pour répondre.');
+            return $this->redirectToRoute('app_login'); // Adapter en fonction de votre configuration
+        }
+        
         // Vérifier si le formulaire a été soumis et s'il est valide
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérer l'utilisateur actuellement connecté
-            $user = $this->getUser();
-
             // Définir l'utilisateur et la date de création de la réponse
-            $response->setUser($user);
-            $response->setCreatedAt(new \DateTimeImmutable());
+            $answer->setUser($user);
+            $answer->setCreatedAt(new \DateTimeImmutable());
 
             // Enregistrer les données dans la base de données
-            $entityManager->persist($response);
+            $entityManager->persist($answer);
             $entityManager->flush();
 
-            // Redirection vers une autre page ou affichage d'un message de succès
-            $this->addFlash('success', 'Votre réponse a bien été prise en compte.');
+            // Afficher un message de succès
+            $this->addFlash('success', 'Votre réponse a bien été enregistrée.');
+                        return $this->render('subject/basket/story.html.twig', [
+                'responseForm' => $form->createView(),
+            ]);
         }
 
         // Récupérez le panier de LeBron James depuis la base de données
@@ -159,7 +168,7 @@ class BasketController extends AbstractController
         ]);
     }
 
-    
+
     // #[Route('/basketcreate', name: 'app_basket')]
     // public function create(EntityManagerInterface $entityManager): Response
     // {
