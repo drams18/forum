@@ -1,0 +1,15 @@
+.forum-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .forum-table th, .forum-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .forum-table th {
+    background-color: #f2f2f2;
+  }
+  

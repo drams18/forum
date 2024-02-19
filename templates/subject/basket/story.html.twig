@@ -1,47 +1,53 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} {{ story.name }}{% endblock %}
+{% block title %}
+    {{ story.name }}
+{% endblock %}
 
 {% block body %}
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="{{ asset('css/story.css') }}">
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Création de la NBA</title>
-</head>
-    <p>{{ story.name }}</p>
-    <br>
+    <h1>{{ story.name }}</h1>
+
     <button><a href="#drams">Répondre à ce sujet</a></button>
-    <br><br><br><br><br><br><br><br><br><br>
+
+    <br /><br /><br /><br /><br />
+
+    <h3>Réponses</h3>
+    <table class="forum-table">
+        <tr>
+            <th>Utilisateur</th>
+            <th>Réponses</th>
+        </tr>
+        {% for answer in answers %}
+            <tr>
+                <td>{{ answer.user.username }}</td>
+                <td>{{ answer.content }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
     <section id="drams">
-        <br>
+        <br />
 
-        {# {% if app.flashes('success') %}
-            <div class="alert alert-success" role="alert">
-                {{ app.flashes('success')[0] }}
-            </div>
-        {% endif %} #}
+        {{ form_start(form, { action: path("app_basket_story"), method: "POST" }) }}
 
-        {{ form_errors(responseForm) }}
+        <div>
+            {{ form_label(form.content, "Message :") }}
+            {{ form_widget(form.content) }}
+            {{ form_errors(form.content) }}
+        </div>
 
-        <form action="" method="post">
-        {{ form_start(responseForm) }}
-
-        {{ form_row(responseForm.subject, {
-            'label': 'Titre :'
-        }) }}
-
-        {{ form_row(responseForm.content, {
-            'label': 'Message :'
-        }) }}
-        <br>
+        <br />
         <button type="submit" class="btn">Poster la réponse</button>
-        <br> 
 
-        </form>
-        {{ form_end(responseForm) }}
-
+        {{ form_end(form) }}
     </section>
-    <br><br><a href="{{ path('app_home') }}">Home</a>
+
+    <br /><br /><a href="{{ path('app_home') }}">Home</a>
 
 {% endblock %}

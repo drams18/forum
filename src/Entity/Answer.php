@@ -14,7 +14,7 @@ class Answer
     #[ORM\Column(type : "integer")]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     protected ?string $content = null;
 
     #[ORM\Column(type: "datetime_immutable")]

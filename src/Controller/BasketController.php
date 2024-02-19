@@ -53,7 +53,7 @@ class BasketController extends AbstractController
     #[Route('/basket/lebron', name: 'app_basket_lebron')]
     public function lebron(EntityManagerInterface $entityManager): Response
     {
-        
+
         // Récupérez le panier de LeBron James depuis la base de données
         $lebronBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'LeBron James']);
 
@@ -81,9 +81,9 @@ class BasketController extends AbstractController
         if (!$user) {
             // Redirection vers la page de connexion ou affichage d'un message d'erreur
             $this->addFlash('error', 'Vous devez être connecté pour répondre.');
-            return $this->redirectToRoute('app_login'); // Adapter en fonction de votre configuration
+            return $this->redirectToRoute('app_login');
         }
-        
+
         // Vérifier si le formulaire a été soumis et s'il est valide
         if ($form->isSubmitted() && $form->isValid()) {
             // Définir l'utilisateur et la date de création de la réponse
@@ -96,14 +96,14 @@ class BasketController extends AbstractController
 
             // Afficher un message de succès
             $this->addFlash('success', 'Votre réponse a bien été enregistrée.');
-                        return $this->render('subject/basket/story.html.twig', [
-                'responseForm' => $form->createView(),
-            ]);
+
+            return $this->redirectToRoute('app_basket_story');
         }
 
         // Récupérez le panier de LeBron James depuis la base de données
         $storyBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
-
+        $answers = $entityManager->getRepository(Answer::class)->findAll();
+        
         // Vérifiez si le panier de LeBron James existe
         if (!$storyBasket) {
             throw $this->createNotFoundException('NBA Story basket not found');
@@ -112,9 +112,11 @@ class BasketController extends AbstractController
         // Rendre le template Twig pour afficher les détails du panier de LeBron James
         return $this->render('subject/basket/story.html.twig', [
             'story' => $storyBasket,
-            'responseForm' => $form->createView(),
+            'form' => $form->createView(),
+            'answers' => $answers,
         ]);
     }
+
 
     #[Route('/basket/mvp', name: 'app_basket_mvp')]
     public function mvp(EntityManagerInterface $entityManager): Response

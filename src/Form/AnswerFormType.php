@@ -15,10 +15,6 @@ class AnswerFormType extends AbstractType
         $builder
             ->add('content', TextareaType::class, [
                 // Options éventuelles pour le champ
-            ])
-
-            ->add('subject', TextareaType::class, [
-                // Options éventuelles pour le champ
             ]);
     }
 
