@@ -1,0 +1,16 @@
+{# templates/subject/new.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Nouveau Sujet{% endblock %}
+
+{% block body %}
+    <h1>Créer un Nouveau Sujet</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.description) }}
+
+    <button type="submit">Créer Sujet</button>
+    {{ form_end(form) }}
+{% endblock %}

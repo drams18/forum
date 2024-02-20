@@ -51,3 +51,12 @@ app_basket_rookies:
 app_movies:
     path: /movies
     controller: App\Controller\MoviesController::movies
+
+subject_new_basket:
+    path: /subject/new/basket
+    controller: App\Controller\SubjectCreationController::newBasket
+
+app_basket_subject:
+    path: '/basket/subject/{id}'
+    controller: 'App\Controller\BasketController::subject'
+    methods: ['GET']

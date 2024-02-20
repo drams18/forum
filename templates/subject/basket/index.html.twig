@@ -1,31 +1,57 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Basket-ball{% endblock %}
-
-{% block body %}
+{% extends 'base.html.twig' %} {% block title %}Basket-ball{% endblock %} {%
+block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+  .example-wrapper {
+    margin: 1em auto;
+    max-width: 800px;
+    width: 95%;
+    font: 18px/1.5 sans-serif;
+  }
+  .example-wrapper code {
+    background: #f5f5f5;
+    padding: 2px 6px;
+  }
 </style>
 
 <div class="example-wrapper">
-  <br>
-  <br>
-  <h2 class="main_title">Bienvenue sur mon forum !</h2>
-  <br> 
-  <h3 class="txt">Je vous propose 5 sujets intéressants au sujet de la {{ subject.name }}</h3>
-  <br>
-  <a href="{{ path('app_basket_story') }}"> - L'histoire de la création de la NBA.</a>
-  <br>
-  <a href="{{ path('app_basket_lebron') }}"> - Lebron James :considéré meilleur joueur de l'histoire </a>
-  <br>
-  <a href="{{ path('app_basket_mvp') }}"> - Les MVP de cette année</a>
-  <br>
-  <a href="{{ path('app_basket_awards') }}"> - La cérémonie des Awards 2023</a>
-  <br>
-  <a href="{{ path('app_basket_rookies') }}"> - Les Rookies à surveiller de près cette saison.</a>
-  
+  <br />
+  <br />
+  <h2 class="main_title">{{ subject.name }}</h2>
+  <br />
+  <h3 class="txt">Voici les sujets intéressants :</h3>
+  <br />
+  <ul>
+    <li>
+      <a href="{{ path('app_basket_story') }}"
+        >L'histoire de la création de la NBA.</a
+      >
+    </li>
+    <li>
+      <a href="{{ path('app_basket_lebron') }}"
+        >Lebron James : considéré meilleur joueur de l'histoire</a
+      >
+    </li>
+    <li><a href="{{ path('app_basket_mvp') }}">Les MVP de cette année</a></li>
+    <li>
+      <a href="{{ path('app_basket_awards') }}">La cérémonie des Awards 2023</a>
+    </li>
+    <li>
+      <a href="{{ path('app_basket_rookies') }}"
+        >Les Rookies à surveiller de près cette saison</a
+      >
+    </li>
+  </ul>
+  <br />
+  <h4>Sujets créés :</h4>
+  <ul>
+    {% for basket in baskets %}
+    <li>
+      <a href="{{ path('app_basket_subject', {'id': basket.id}) }}">{{ basket.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  <a href="{{ path('subject_new_basket') }}"><button>Créer un sujet</button></a>
 </div>
-<br>
+<br />
 <a href="{{ path('app_home') }}">Home</a>
 {% endblock %}

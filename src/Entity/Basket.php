@@ -19,6 +19,9 @@ class Basket
     #[ORM\Column(length: 255)]
     private ?string $description = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $theme = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Basket
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(string $theme): static
+    {
+        $this->theme = $theme;
 
         return $this;
     }

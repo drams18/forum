@@ -16,8 +16,11 @@ class Subject
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type:'text', length: 255, nullable:true)]
     private ?string $description = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $theme = null;
 
     public function getId(): ?int
     {
@@ -44,6 +47,18 @@ class Subject
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getTheme(): ?string
+    {
+        return $this->theme;
+    }
+
+    public function setTheme(string $theme): static
+    {
+        $this->theme = $theme;
 
         return $this;
     }

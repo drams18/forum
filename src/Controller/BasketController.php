@@ -11,43 +11,40 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\Query\Expr;
 
 class BasketController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+    $this->entityManager = $entityManager;
+    }
+
     #[Route('/basket', name: 'app_basket_main')]
     public function basket(EntityManagerInterface $entityManager): Response
     {
         // Récupérer tous les paniers depuis la base de données
         $basketRepository = $entityManager->getRepository(Basket::class);
-        $existingBaskets = $basketRepository->findAll();
-
+        
+        // Récupérer tous les paniers à partir de l'ID 54
+        $queryBuilder = $basketRepository->createQueryBuilder('b');
+        $queryBuilder->where('b.id >= :id')
+                     ->setParameter('id', 54)
+                     ->orderBy('b.id', 'ASC');
+        $baskets = $queryBuilder->getQuery()->getResult();
+    
         // Récupérer un sujet depuis la base de données
         $subjectRepository = $entityManager->getRepository(Subject::class);
         $subject = $subjectRepository->findOneBy([]); // Vous pouvez utiliser findOneBy avec des conditions appropriées
-
-        // S'il existe déjà des paniers, retourner la liste des paniers existants avec le sujet
-        if (!empty($existingBaskets)) {
-            return $this->render('subject/basket/index.html.twig', [
-                'baskets' => $existingBaskets,
-                'subject' => $subject, // Ajouter le sujet aux données rendues
-            ]);
-        }
-
-        // Si aucun panier n'existe, créer un nouveau panier
-        $basket = new Basket();
-        $basket->setName('NBA');
-        $basket->setDescription('National Basket-Ball League.');
-
-        // Enregistrer le nouveau panier dans la base de données
-        $entityManager->persist($basket);
-        $entityManager->flush();
-
-        // Retourner la vue avec le nouveau panier et le sujet
+    
+        // Retourner la vue avec les paniers et le sujet
         return $this->render('subject/basket/index.html.twig', [
-            'baskets' => [$basket], // Mettre le panier dans un tableau pour maintenir la structure
-            'subject' => $subject, // Ajouter le sujet aux données rendues
+            'baskets' => $baskets,
+            'subject' => $subject,
         ]);
-    }
+    }       
 
 
     #[Route('/basket/lebron', name: 'app_basket_lebron')]
@@ -103,7 +100,7 @@ class BasketController extends AbstractController
         // Récupérez le panier de LeBron James depuis la base de données
         $storyBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
         $answers = $entityManager->getRepository(Answer::class)->findAll();
-        
+
         // Vérifiez si le panier de LeBron James existe
         if (!$storyBasket) {
             throw $this->createNotFoundException('NBA Story basket not found');
@@ -170,7 +167,22 @@ class BasketController extends AbstractController
         ]);
     }
 
+    #[Route('/basket/subject/{id}', name: 'app_basket_subject')]
+    public function subject($id): Response
+    {
+        // Récupérer le sujet de panier avec l'ID fourni depuis la base de données
+        $basket = $this->entityManager->getRepository(Basket::class)->find($id);
 
+        // Vérifier si le sujet de panier existe
+        if (!$basket) {
+            throw $this->createNotFoundException('Le sujet de panier demandé n\'existe pas.');
+        }
+
+        // Rendre la vue pour afficher les détails du sujet de panier
+        return $this->render('subject/basket/news.html.twig', [
+            'basket' => $basket,
+        ]);
+    }
     // #[Route('/basketcreate', name: 'app_basket')]
     // public function create(EntityManagerInterface $entityManager): Response
     // {
