@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %} {% block title %}Hello MySubjectController!{%
+endblock %} {% block body %}
+
+<h3>
+  {% if user is defined %} Username :
+  {{ user.username }}
+  {% endif %} 
+  
+  {# {% if mySubjects is empty %}
+  <p>Aucun sujet trouvé.</p>
+  {% else %}
+  <ul>
+    {% for basket in mySubjects %}
+    <li>
+      {% if basket.name is defined %}
+      {{ basket.name }}
+      {% else %} Nom non disponible {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %} #}
+</h3>
+
+<a href="{{ path('app_home') }}">Home</a>
+{% endblock %}

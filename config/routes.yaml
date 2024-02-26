@@ -60,3 +60,7 @@ app_basket_subject:
     path: '/basket/subject/{id}'
     controller: 'App\Controller\BasketController::subject'
     methods: ['GET']
+
+app_my_subject:
+    path: /my/subject
+    controller: App\Controller\MySubjectController::mysubject
