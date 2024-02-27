@@ -35,11 +35,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\OneToMany(targetEntity: "App\Entity\Basket", mappedBy: "user")]
-    private $baskets;
+    private $basket;
 
     public function __construct()
     {
-        $this->baskets = new ArrayCollection();
+        $this->basket = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -128,6 +128,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getMySubjects(): Collection
     {
-        return $this->baskets;
+        return $this->basket;
     }
 }
