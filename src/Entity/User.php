@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[ORM\OneToMany(targetEntity: "App\Entity\Basket", mappedBy: "user")]
+    #[ORM\OneToMany(targetEntity: "App\Entity\Basket", mappedBy: "name")]
     private $basket;
 
     public function __construct()

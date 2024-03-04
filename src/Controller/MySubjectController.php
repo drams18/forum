@@ -26,7 +26,7 @@ class MySubjectController extends AbstractController
             ]);
         } else {
 
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_my_subject');
         }
     }
 

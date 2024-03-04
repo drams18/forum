@@ -1,31 +1,34 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %} {% block title %}Mes sujets{% endblock %} {%
+block body %}
+<h3>
 
-{% block title %}Mes sujets{% endblock %}
+  {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+  <p>Email: {{ app.user.email }}</p>
+  {% endif %}
 
-{% block body %}
-    <h3>
-        {% if user is defined %}
-            Username : {{ user.username }}
-        {% endif %}
-        
-        {% if mySubjects is empty %}
-            <p>Aucun sujet trouvé.</p>
-        {% else %}
-            <ul>
-                {% for basket in mySubjects %}
-                    <li>
-                        {% if basket.name is defined %}
-                            {{ basket.name }}
-                            <a href="{{ path('app_delete_basket', {'id': basket.id}) }}">Supprimer</a>
-                            {# Remplacez 'app_delete_basket' par le nom de votre route de suppression et ajoutez l'identifiant du sujet à supprimer #}
-                        {% else %}
-                            Nom non disponible
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </h3>
 
-    <a href="{{ path('app_home') }}">Home</a>
+  {% if user is defined %} Username : {{ app.user.username }}
+  {% endif %}
+  <p>Voici la liste des sujets que vous avez créé :</p>
+
+  {% if mySubjects is empty %}
+  <p>Aucun sujet trouvé.</p>
+{% else %}
+  <ul>
+      {% for basket in mySubjects %}
+          <li>
+              {% if basket.name is defined %}
+                  {{ basket.name }}
+                  <a href="{{ path('app_my_subject_delete', {'id': basket.id}) }}">Supprimer</a>
+                  {# Remplacez 'app_delete_basket' par le nom de votre route de suppression et ajoutez l'identifiant du sujet à supprimer #}
+              {% else %}
+                  Nom non disponible
+              {% endif %}
+          </li>
+      {% endfor %}
+  </ul>
+{% endif %}
+</h3>
+
+<a href="{{ path('app_home') }}">Home</a>
 {% endblock %}
