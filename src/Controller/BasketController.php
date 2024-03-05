@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Doctrine\ORM\Query\Expr;
 
 class BasketController extends AbstractController
@@ -66,7 +68,7 @@ class BasketController extends AbstractController
     }
 
     #[Route('/basket/story', name: 'app_basket_story')]
-    public function story(Request $request, EntityManagerInterface $entityManager): Response
+    public function story(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $answer = new Answer();
         $form = $this->createForm(AnswerFormType::class, $answer);
@@ -91,6 +93,8 @@ class BasketController extends AbstractController
             $entityManager->persist($answer);
             $entityManager->flush();
 
+            $this->sendEmail($answer, $mailer);
+
             // Afficher un message de succès
             $this->addFlash('success', 'Votre réponse a bien été enregistrée.');
 
@@ -114,6 +118,19 @@ class BasketController extends AbstractController
         ]);
     }
 
+    private function sendEmail(Answer $answer, MailerInterface $mailer)
+    {
+        $subject = 'Nouvelle réponse ajoutée';
+        $recipientEmail = 'arphandrame0@gmail.com'; 
+
+        $email = (new Email())
+            ->from('forum@form.com')
+            ->to($recipientEmail)
+            ->subject($subject)
+            ->html('<p>Une nouvelle réponse a été ajoutée à votre formulaire.</p>');
+
+        $mailer->send($email);
+    }
 
     #[Route('/basket/mvp', name: 'app_basket_mvp')]
     public function mvp(EntityManagerInterface $entityManager): Response
