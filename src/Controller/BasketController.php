@@ -21,7 +21,7 @@ class BasketController extends AbstractController
 
     public function __construct(EntityManagerInterface $entityManager)
     {
-    $this->entityManager = $entityManager;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/basket', name: 'app_basket_main')]
@@ -29,24 +29,24 @@ class BasketController extends AbstractController
     {
         // Récupérer tous les paniers depuis la base de données
         $basketRepository = $entityManager->getRepository(Basket::class);
-        
+
         // Récupérer tous les paniers à partir de l'ID 54
         $queryBuilder = $basketRepository->createQueryBuilder('b');
         $queryBuilder->where('b.id >= :id')
-                     ->setParameter('id', 54)
-                     ->orderBy('b.id', 'ASC');
+            ->setParameter('id', 54)
+            ->orderBy('b.id', 'ASC');
         $baskets = $queryBuilder->getQuery()->getResult();
-    
+
         // Récupérer un sujet depuis la base de données
         $subjectRepository = $entityManager->getRepository(Subject::class);
         $subject = $subjectRepository->findOneBy([]); // Vous pouvez utiliser findOneBy avec des conditions appropriées
-    
+
         // Retourner la vue avec les paniers et le sujet
         return $this->render('subject/basket/index.html.twig', [
             'baskets' => $baskets,
             'subject' => $subject,
         ]);
-    }       
+    }
 
 
     #[Route('/basket/lebron', name: 'app_basket_lebron')]
@@ -91,10 +91,13 @@ class BasketController extends AbstractController
 
             // Enregistrer les données dans la base de données
             $entityManager->persist($answer);
-            $entityManager->flush();
+            // $entityManager->flush();
 
-            $this->sendEmail($answer, $mailer);
-
+            $userComments = [];
+            foreach ($userComments as $userComment) {
+                $this->sendEmail($userComment->getEmail(), $mailer);
+            }
+            
             // Afficher un message de succès
             $this->addFlash('success', 'Votre réponse a bien été enregistrée.');
 
@@ -118,18 +121,19 @@ class BasketController extends AbstractController
         ]);
     }
 
-    private function sendEmail(Answer $answer, MailerInterface $mailer)
+    private function sendEmail(String $email, MailerInterface $mailer)
     {
         $subject = 'Nouvelle réponse ajoutée';
-        $recipientEmail = 'arphandrame0@gmail.com'; 
 
+        
         $email = (new Email())
-            ->from('forum@form.com')
-            ->to($recipientEmail)
-            ->subject($subject)
-            ->html('<p>Une nouvelle réponse a été ajoutée à votre formulaire.</p>');
+        ->from('forum@form.com')
+        ->to($email)
+        ->subject($subject)
+        ->html('<p>Une nouvelle réponse a été ajoutée à votre formulaire.</p>');
 
         $mailer->send($email);
+        dd('ok');
     }
 
     #[Route('/basket/mvp', name: 'app_basket_mvp')]
