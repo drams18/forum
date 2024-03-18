@@ -3,38 +3,42 @@
 namespace App\Controller;
 
 use App\Entity\Basket;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\BrowserKit\Request;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MySubjectController extends AbstractController
 {
-    #[Route('/my/subject', name: 'app_my_subject')]
-    public function mysubject(Security $security): Response
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $user = $security->getUser();
+        $this->entityManager = $entityManager;
+    }
 
-        if ($user !== null) {
+    #[Route('/my/subject', name: 'app_my_subject')]
+    public function mysubject(): Response
+    {
+        $user = $this->getUser();
 
-            $mySubjects = $user->getMySubjects();
-
-            return $this->render('my_subject/index.html.twig', [
-                'mySubjects' => $mySubjects,
-                'user' => $user,
-            ]);
-        } else {
-
-            return $this->redirectToRoute('app_my_subject');
+        if (!$user) {
+            return $this->redirectToRoute('app_login'); 
         }
+
+        $mySubjects = $user->getBaskets();
+
+        return $this->render('my_subject/index.html.twig', [
+            'mySubjects' => $mySubjects,
+            'user' => $user,
+        ]);
     }
 
     #[Route('/my/subject/delete/{id}', name: 'app_my_subject_delete')]
-    public function deleteSubject(Request $request, $id): Response
+    public function deleteSubject(Request $request, int $id): Response
     {
-        $entityManager = $this->$this->getDoctrine()->getManager();
-        $subject = $entityManager->getRepository(Basket::class)->find($id);
+        $subject = $this->entityManager->getRepository(Basket::class)->find($id);
 
         // Vérifier si le sujet existe
         if (!$subject) {
@@ -47,10 +51,10 @@ class MySubjectController extends AbstractController
         }
 
         // Supprimer le sujet
-        $entityManager->remove($subject);
-        $entityManager->flush();
+        $this->entityManager->remove($subject);
+        $this->entityManager->flush();
 
         // Rediriger l'utilisateur vers une page de confirmation ou une autre page appropriée
-        return $this->redirectToRoute('app_home');
+        return $this->redirectToRoute('app_my_subject');
     }
 }

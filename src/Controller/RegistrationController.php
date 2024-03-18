@@ -5,31 +5,36 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
-use Doctrine\Persistence\ManagerRegistry;
 
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
-    private $passwordHasher;
+    private UserPasswordHasherInterface $passwordHasher;
+    private ManagerRegistry $doctrine;
 
-    public function __construct(EmailVerifier $emailVerifier, UserPasswordHasherInterface $passwordHasher, private ManagerRegistry $doctrine)
-    {
+    public function __construct(
+        EmailVerifier $emailVerifier,
+        UserPasswordHasherInterface $passwordHasher,
+        ManagerRegistry $doctrine
+    ) {
         $this->emailVerifier = $emailVerifier;
         $this->passwordHasher = $passwordHasher;
+        $this->doctrine = $doctrine;
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    public function register(Request $request): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -37,27 +42,22 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setRoles(['ROLE_USER']);
-
-            $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
-            );
+            $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
 
             $entityManager = $this->doctrine->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
             // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            $this->emailVerifier->sendEmailConfirmation(
+                'app_verify_email', 
+                $user,
                 (new TemplatedEmail())
-                    ->from(new Address('arphan@devphantom.com', 'drams'))
+                    ->from(new Address('noreply@example.com', 'Your Email Bot'))
                     ->to($user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute('app_home');
         }

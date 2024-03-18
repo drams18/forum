@@ -16,6 +16,10 @@ app_register:
     path: /register
     controller: App\Controller\RegistrationController::register
 
+app_register_form:
+    path: /register/form
+    controller: App\Controller\RegistrationController::registerForm
+
 app_subject:
     path: /subject
     controller: App\Controller\SubjectController::subject

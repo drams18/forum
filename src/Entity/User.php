@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -17,7 +17,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private string $email;
@@ -34,12 +34,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string')]
     private string $password;
 
-    #[ORM\OneToMany(targetEntity: "App\Entity\Basket", mappedBy: "name")]
-    private $basket;
+    #[ORM\OneToMany(targetEntity: Basket::class, mappedBy: "user")]
+    private $baskets;
 
     public function __construct()
     {
-        $this->basket = new ArrayCollection();
+        $this->baskets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,12 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    public function setName(?string $name): self
     {
         $this->name = $name;
 
@@ -126,8 +126,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // If you store any temporary, sensitive data on the user, clear it here
     }
 
-    public function getMySubjects(): Collection
+    /**
+     * @return Collection|Basket[]
+     */
+    public function getBaskets(): Collection
     {
-        return $this->basket;
+        return $this->baskets;
     }
+
+    public function addBasket(Basket $basket): self
+    {
+        if (!$this->baskets->contains($basket)) {
+            $this->baskets[] = $basket;
+            $basket->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBasket(Basket $basket): self
+    {
+        if ($this->baskets->removeElement($basket)) {
+            if ($basket->getUser() === $this) {
+                $basket->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
