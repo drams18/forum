@@ -25,18 +25,24 @@ class SubjectCreationController extends AbstractController
     #[Route('/subject/new/basket', name: 'subject_new_basket')]
     public function newBasket(Request $request): Response
     {
+        $user = $this->getUser();
+    
         $subject = new Basket();
         $form = $this->createForm(BasketSubjectCreationType::class, $subject);
-
+    
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+  
+            $subject->setUser($user);
+    
             $this->entityManager->persist($subject);
             $this->entityManager->flush();
-
+    
             $this->addFlash('success', 'Le sujet a été créé avec succès.');
-
+    
             return $this->redirectToRoute('app_basket_main');
         }
+    
         // $basketRepository = $entityManager->getRepository(Basket::class);
         $basketSubjects = $this->basketRepository->findBy(['id' => 54]);
         return $this->render('subject_creation/new.html.twig', [
@@ -44,6 +50,7 @@ class SubjectCreationController extends AbstractController
             'basketSubjects' => $basketSubjects,
         ]);
     }
+    
 
     #[Route('/subject/basket', name: 'subject_basket')]
     public function add(Request $request): Response{

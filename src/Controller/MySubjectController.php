@@ -40,21 +40,17 @@ class MySubjectController extends AbstractController
     {
         $subject = $this->entityManager->getRepository(Basket::class)->find($id);
 
-        // Vérifier si le sujet existe
         if (!$subject) {
             throw $this->createNotFoundException('Le sujet n\'existe pas.');
         }
 
-        // Vérifier si l'utilisateur actuel est l'auteur du sujet
         if ($subject->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à supprimer ce sujet.');
         }
 
-        // Supprimer le sujet
         $this->entityManager->remove($subject);
         $this->entityManager->flush();
 
-        // Rediriger l'utilisateur vers une page de confirmation ou une autre page appropriée
         return $this->redirectToRoute('app_my_subject');
     }
 }

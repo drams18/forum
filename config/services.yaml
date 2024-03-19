@@ -12,9 +12,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
-    EasyCorp\Bundle\EasyAdminBundle\Event\CommentEventListener:
-        arguments:
-            $mailer: '@Symfony\Component\Mailer\MailerInterface'
-        tags:
-            - { name: 'kernel.event_subscriber' }
