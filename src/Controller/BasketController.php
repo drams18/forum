@@ -4,65 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Answer;
 use App\Entity\Basket;
-use App\Entity\Subject;
 use App\Form\AnswerFormType;
 use App\Repository\UserRepository;
+use App\Service\MailerService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Doctrine\ORM\Query\Expr;
 
 class BasketController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private MailerService $mailerService;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, MailerService $mailerService)
     {
         $this->entityManager = $entityManager;
-    }
-
-    #[Route('/basket', name: 'app_basket_main')]
-    public function basket(EntityManagerInterface $entityManager): Response
-    {
-        $basketRepository = $entityManager->getRepository(Basket::class);
-
-        $queryBuilder = $basketRepository->createQueryBuilder('b');
-        $queryBuilder->where('b.id >= :id')
-            ->setParameter('id', 54)
-            ->orderBy('b.id', 'ASC');
-        $baskets = $queryBuilder->getQuery()->getResult();
-
-        $subjectRepository = $entityManager->getRepository(Subject::class);
-        $subject = $subjectRepository->findOneBy([]); // Vous pouvez utiliser findOneBy avec des conditions appropriées
-
-        return $this->render('subject/basket/index.html.twig', [
-            'baskets' => $baskets,
-            'subject' => $subject,
-        ]);
-    }
-
-
-    #[Route('/basket/lebron', name: 'app_basket_lebron')]
-    public function lebron(EntityManagerInterface $entityManager): Response
-    {
-
-        $lebronBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'LeBron James']);
-
-        if (!$lebronBasket) {
-            throw $this->createNotFoundException('LeBron James basket not found');
-        }
-
-        return $this->render('subject/basket/lebron.html.twig', [
-            'lebron' => $lebronBasket,
-        ]);
+        $this->mailerService = $mailerService;
     }
 
     #[Route('/basket/story', name: 'app_basket_story')]
-    public function story(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer, UserRepository $userRepository): Response
+    public function story(Request $request, UserRepository $userRepository): Response
     {
         $answer = new Answer();
         $form = $this->createForm(AnswerFormType::class, $answer);
@@ -78,23 +41,23 @@ class BasketController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $answer->setUser($user);
             $answer->setCreatedAt(new \DateTimeImmutable());
-
-            $entityManager->persist($answer);
-            $entityManager->flush();
-
+        
+            $this->entityManager->persist($answer);
+            $this->entityManager->flush();
+        
             $users = $userRepository->findAll();
-
-            foreach ($users as $user) {
-                $this->sendEmail($user->getEmail(), $mailer);
+        
+            foreach ($users as $userItem) {
+                $this->mailerService->sendEmail($userItem->getEmail(), 'Nouveau commentaire ajouté.', 'Une nouvelle réponse a été ajoutée à votre formulaire.');
             }
-
-            $this->addFlash('success', 'Réponse enregitrée !');
-
+        
+            $this->addFlash('success', 'Réponse enregistrée !');
+        
             return $this->redirectToRoute('app_basket_story');
         }
 
-        $storyBasket = $entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
-        $answers = $entityManager->getRepository(Answer::class)->findAll();
+        $storyBasket = $this->entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
+        $answers = $this->entityManager->getRepository(Answer::class)->findAll();
 
         if (!$storyBasket) {
             throw $this->createNotFoundException('NBA Story basket not found');
@@ -106,18 +69,6 @@ class BasketController extends AbstractController
             'answers' => $answers,
         ]);
     }
-
-    private function sendEmail(String $email, MailerInterface $mailer): void
-    {
-        $email = (new Email())
-            ->from('forum@form.com')
-            ->to($email)
-            ->subject('Nouveau commentaire ajouté.')
-            ->html('<p>Une nouvelle réponse a été ajoutée à votre formulaire.</p>');
-
-        $mailer->send($email);
-    }
-
 
     #[Route('/basket/mvp', name: 'app_basket_mvp')]
     public function mvp(EntityManagerInterface $entityManager): Response
@@ -175,21 +126,4 @@ class BasketController extends AbstractController
             'basket' => $basket,
         ]);
     }
-    // #[Route('/basketcreate', name: 'app_basket')]
-    // public function create(EntityManagerInterface $entityManager): Response
-    // {
-    //     $basket = new Basket();
-    //     $basket->setName('Rookies');
-    //     $basket->setDescription('Un Rookie est une nouvelle recrue en première année dans une des équipes de la NBA.');
-
-    //     // tell Doctrine you want to (eventually) save the Basket (no queries yet)
-    //     $entityManager->persist($basket);
-
-    //     // actually execute the queries (i.e. the INSERT query)
-    //     $entityManager->flush();
-
-    //     return $this->render('subject/basket/index.html.twig', [
-    //         'basket' => $basket,
-    //     ]);
-    // }
 }

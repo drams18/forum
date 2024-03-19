@@ -14,14 +14,15 @@ class MailerService
         $this->mailer = $mailer;
     }
 
-    public function sendEmail(string $subject, string $recipient, string $body): void
+    public function sendEmail(string $recipient, string $body): void
     {
         $email = (new Email())
-            ->from('arphandrame0@gmail.com')
+            ->from('forum@form.com')
             ->to($recipient)
-            ->subject($subject)
+            ->subject('Nouveau commentaire ajouté - forum@form.com')
             ->text($body);
-
+    
         $this->mailer->send($email);
     }
+    
 }
