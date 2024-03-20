@@ -1,5 +1,6 @@
-{% extends 'base.html.twig' %} {% block title %}Basket-ball{% endblock %} {%
-block body %}
+{% extends 'base.html.twig' %} 
+{% block title %}Basket-ball{% endblock %} 
+{% block body %}
 <style>
   .example-wrapper {
     margin: 1em auto;
@@ -16,36 +17,22 @@ block body %}
 <div class="example-wrapper">
   <br />
   <br />
-  <h2 class="main_title">{{ subject.name }}</h2>
+  <h2 class="main_title">Basket-ball</h2>
   <br />
   <h3 class="txt">Voici les sujets intéressants :</h3>
   <br />
   <ul>
     <li>
-      <a href="{{ path('app_basket_story') }}"
-        >L'histoire de la création de la NBA.</a
-      >
+      <a href="{{ path('app_basket_story') }}">L'histoire de la création de la NBA.</a>
     </li>
-    {# <li>
-      <a href="{{ path('app_basket_lebron') }}"
-        >Lebron James : considéré meilleur joueur de l'histoire</a
-      >
-    </li>
-    <li><a href="{{ path('app_basket_mvp') }}">Les MVP de cette année</a></li>
-    <li>
-      <a href="{{ path('app_basket_awards') }}">La cérémonie des Awards 2023</a>
-    </li>
-    <li>
-      <a href="{{ path('app_basket_rookies') }}"
-        >Les Rookies à surveiller de près cette saison</a
-      >
-    </li> #}
   </ul>
-  <h4>Sujets créés :</h4>
+  <h4>Sujets créés par les utilisateurs :</h4>
   <ul>
     {% for basket in baskets %}
     <li>
-      <a href="{{ path('app_basket_subject', {'id': basket.id}) }}">{{ basket.name }}</a>
+      <a href="{{ path('app_basket_subject', { id: basket.id }) }}">{{
+        basket.name
+      }}</a>
     </li>
     {% endfor %}
   </ul>
