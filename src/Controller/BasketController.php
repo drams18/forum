@@ -65,7 +65,10 @@ class BasketController extends AbstractController
             $this->entityManager->persist($answer);
             $this->entityManager->flush();
 
-            $users = $userRepository->findAll();
+            $startID = 63;
+            $usersAnswered = $userRepository->find
+
+            // $users = $userRepository->findAll();
 
             foreach ($users as $userItem) {
                 $this->mailerService->sendEmail($userItem->getEmail(), 'Nouveau commentaire ajouté.', 'Une nouvelle réponse a été ajoutée à votre formulaire.');
