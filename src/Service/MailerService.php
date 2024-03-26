@@ -23,7 +23,6 @@ class MailerService
             ->text($body);
     
         $this->mailer->send($email);
-        dd('mail sent');
     }
     
 }

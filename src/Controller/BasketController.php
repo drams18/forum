@@ -18,79 +18,83 @@ class BasketController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private MailerService $mailerService;
+    private UserRepository $userRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, MailerService $mailerService)
+    public function __construct(EntityManagerInterface $entityManager, MailerService $mailerService, UserRepository $userRepository)
     {
         $this->entityManager = $entityManager;
         $this->mailerService = $mailerService;
+        $this->userRepository = $userRepository;;
     }
 
     #[Route('/basket', name: 'app_basket_main')]
     public function basket(): Response
     {
-        $subject = $this->entityManager->getRepository(Subject::class)->findAll();
-        
-        $startId = 63; // L'ID à partir duquel vous souhaitez récupérer les sujets
-        $baskets = $this->entityManager->getRepository(Basket::class)->findAll();
-    
-        // Filtrer les sujets à partir de l'ID 63
-        $filteredBaskets = array_filter($baskets, function($basket) use ($startId) {
-            return $basket->getId() >= $startId;
-        });
+        $filteredBaskets = $this->getFilteredBaskets();
 
         return $this->render('subject/basket/index.html.twig', [
             'baskets' => $filteredBaskets,
-            'subject' => $subject,
+            'subject' => $this->entityManager->getRepository(Subject::class)->findAll(),
         ]);
     }
 
     #[Route('/basket/story', name: 'app_basket_story')]
-    public function story(Request $request, UserRepository $userRepository): Response
+    public function story(Request $request): Response
     {
         $answer = new Answer();
         $form = $this->createForm(AnswerFormType::class, $answer);
-
+    
         $form->handleRequest($request);
-
+    
         $user = $this->getUser();
         if (!$user) {
             $this->addFlash('error', 'Vous devez être connecté pour répondre.');
             return $this->redirectToRoute('app_login');
         }
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
             $answer->setUser($user);
             $answer->setCreatedAt(new \DateTimeImmutable());
-
+    
             $this->entityManager->persist($answer);
             $this->entityManager->flush();
-
+    
+    
             $startID = 63;
-            $usersAnswered = $userRepository->find
-
-            // $users = $userRepository->findAll();
-
-            foreach ($users as $userItem) {
+            $usersAnswered = $this->userRepository->findAll();
+    
+            foreach ($usersAnswered as $userItem) {
                 $this->mailerService->sendEmail($userItem->getEmail(), 'Nouveau commentaire ajouté.', 'Une nouvelle réponse a été ajoutée à votre formulaire.');
             }
-
+    
             $this->addFlash('success', 'Réponse enregistrée !');
-
+    
             return $this->redirectToRoute('app_basket_story');
         }
-
+    
         $storyBasket = $this->entityManager->getRepository(Basket::class)->findOneBy(['name' => 'NBA Story']);
         $answers = $this->entityManager->getRepository(Answer::class)->findAll();
-
+    
         if (!$storyBasket) {
             throw $this->createNotFoundException('NBA Story basket inexistant.');
         }
-
+    
         return $this->render('subject/basket/story.html.twig', [
             'story' => $storyBasket,
             'form' => $form->createView(),
             'answers' => $answers,
         ]);
+    }
+    
+
+    private function getFilteredBaskets(): array
+    {
+        $startId = 63;
+        $baskets = $this->entityManager->getRepository(Basket::class)->findAll();
+
+        return array_filter($baskets, function ($basket) use ($startId) {
+            return $basket->getId() >= $startId;
+        });
     }
 
     #[Route('/basket/mvp', name: 'app_basket_mvp')]
