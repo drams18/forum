@@ -16,11 +16,20 @@ class Subject
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type:'text', length: 255, nullable:true)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $theme = null;
+    #[ORM\ManyToOne(inversedBy: 'subjects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Theme $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'subjects')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $owner = null;
+
+    #[ORM\ManyToOne(inversedBy: 'subjectsTheme')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Theme $theme = null;
 
     public function getId(): ?int
     {
@@ -44,19 +53,43 @@ class Subject
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getTheme(): ?string
+    public function getCategory(): ?Theme
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Theme $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getOwner(): ?User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(?User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
+    }
+
+    public function getTheme(): ?Theme
     {
         return $this->theme;
     }
 
-    public function setTheme(string $theme): static
+    public function setTheme(?Theme $theme): static
     {
         $this->theme = $theme;
 

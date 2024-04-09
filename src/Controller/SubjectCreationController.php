@@ -13,52 +13,51 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SubjectCreationController extends AbstractController
 {
-    private $entityManager;
-    private $basketRepository;
+    // private $entityManager;
+    // private $basketRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, BasketRepository $basketRepository)
-    {
-        $this->entityManager = $entityManager;
-        $this->basketRepository = $basketRepository;
-    }
+    // public function __construct(EntityManagerInterface $entityManager, BasketRepository $basketRepository)
+    // {
+    //     $this->entityManager = $entityManager;
+    //     $this->basketRepository = $basketRepository;
+    // }
 
-    #[Route('/subject/new/basket', name: 'subject_new_basket')]
-    public function newBasket(Request $request): Response
-    {
-        $user = $this->getUser();
+    // #[Route('/subject/new/basket', name: 'subject_new_basket')]
+    // public function newBasket(Request $request): Response
+    // {
+    //     $user = $this->getUser();
     
-        $subject = new Basket();
-        $form = $this->createForm(BasketSubjectCreationType::class, $subject);
+    //     $subject = new Basket();
+    //     $form = $this->createForm(BasketSubjectCreationType::class, $subject);
     
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+    //     $form->handleRequest($request);
+    //     if ($form->isSubmitted() && $form->isValid()) {
   
-            $subject->setUser($user);
+    //         $subject->setUser($user);
     
-            $this->entityManager->persist($subject);
-            $this->entityManager->flush();
+    //         $this->entityManager->persist($subject);
+    //         $this->entityManager->flush();
     
-            $this->addFlash('success', 'Le sujet a été créé avec succès.');
+    //         $this->addFlash('success', 'Le sujet a été créé avec succès.');
     
-            return $this->redirectToRoute('app_basket_main');
-        }
+    //         return $this->redirectToRoute('app_basket_main');
+    //     }
     
-        // $basketRepository = $entityManager->getRepository(Basket::class);
-        $basketSubjects = $this->basketRepository->findBy(['id' => 54]);
-        return $this->render('subject_creation/new.html.twig', [
-            'form' => $form->createView(),
-            'basketSubjects' => $basketSubjects,
-        ]);
-    }
+    //     $basketSubjects = $this->basketRepository->findBy(['id' => 54]);
+    //     return $this->render('subject_creation/new.html.twig', [
+    //         'form' => $form->createView(),
+    //         'basketSubjects' => $basketSubjects,
+    //     ]);
+    // }
     
 
-    #[Route('/subject/basket', name: 'subject_basket')]
-    public function add(Request $request): Response{
-        $basketSubjects = $this->basketRepository->findBy(['id' => 54]);
+    // #[Route('/subject/basket', name: 'subject_basket')]
+    // public function add(Request $request): Response{
+    //     $basketSubjects = $this->basketRepository->findBy(['id' => 54]);
 
-        return $this->render('subject/basket/index.html.twig', [
+    //     return $this->render('subject/basket/index.html.twig', [
 
-            'basketSubjects' => $basketSubjects
-        ]);
-    }
+    //         'basketSubjects' => $basketSubjects
+    //     ]);
+    // }
 }

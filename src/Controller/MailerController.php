@@ -10,20 +10,20 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class MailerController extends AbstractController
 {
-    #[Route('/mailer', name: 'app_mailer')]
-    public function sendEmail(MailerInterface $mailer): Response
-    {
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('you@example.com')
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+    // #[Route('/mailer', name: 'app_mailer')]
+    // public function sendEmail(MailerInterface $mailer): Response
+    // {
+    //     $email = (new Email())
+    //         ->from('hello@example.com')
+    //         ->to('you@example.com')
+    //         ->subject('Time for Symfony Mailer!')
+    //         ->text('Sending emails is fun again!')
+    //         ->html('<p>See Twig integration for better HTML integration!</p>');
 
-        $mailer->send($email);
+    //     $mailer->send($email);
 
-        return $this->render('mailer/index.html.twig', [
-            'controller_name' => 'MailerController',
-        ]);
-    }
+    //     return $this->render('mailer/index.html.twig', [
+    //         'controller_name' => 'MailerController',
+    //     ]);
+    // }
 }
