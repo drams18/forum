@@ -24,9 +24,9 @@ class Theme
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'category')]
     private Collection $subjects;
 
-    #[ORM\ManyToOne(inversedBy: 'category')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    // #[ORM\ManyToOne(inversedBy: 'category')]
+    // #[ORM\JoinColumn(nullable: false)]
+    // private ?User $user = null;
 
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'theme')]
     private Collection $subjectsTheme;
@@ -96,17 +96,17 @@ class Theme
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
+    // public function getUser(): ?User
+    // {
+    //     return $this->user;
+    // }
 
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
+    // public function setUser(?User $user): static
+    // {
+    //     $this->user = $user;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Subject>

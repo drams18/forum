@@ -34,8 +34,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    #[ORM\OneToMany(targetEntity: Theme::class, mappedBy: 'user')]
-    private Collection $category;
+    // #[ORM\OneToMany(targetEntity: Theme::class, mappedBy: 'user')]
+    // private Collection $category;
 
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'owner')]
     private Collection $subjects;
@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->category = new ArrayCollection();
+        // $this->category = new ArrayCollection();
         $this->subjects = new ArrayCollection();
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
@@ -140,35 +140,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Theme>
-     */
-    public function getCategory(): Collection
-    {
-        return $this->category;
-    }
+    // /**
+    //  * @return Collection<int, Theme>
+    //  */
+    // public function getCategory(): Collection
+    // {
+    //     return $this->category;
+    // }
 
-    public function addCategory(Theme $category): static
-    {
-        if (!$this->category->contains($category)) {
-            $this->category->add($category);
-            $category->setUser($this);
-        }
+    // public function addCategory(Theme $category): static
+    // {
+    //     if (!$this->category->contains($category)) {
+    //         $this->category->add($category);
+    //         $category->setUser($this);
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
-    public function removeCategory(Theme $category): static
-    {
-        if ($this->category->removeElement($category)) {
-            // set the owning side to null (unless already changed)
-            if ($category->getUser() === $this) {
-                $category->setUser(null);
-            }
-        }
+    // public function removeCategory(Theme $category): static
+    // {
+    //     if ($this->category->removeElement($category)) {
+    //         // set the owning side to null (unless already changed)
+    //         if ($category->getUser() === $this) {
+    //             $category->setUser(null);
+    //         }
+    //     }
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Subject>
