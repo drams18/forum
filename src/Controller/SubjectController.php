@@ -6,6 +6,7 @@ use App\Entity\Subject;
 use App\Form\SubjectFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,10 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubjectController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
+    private $security;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, Security $security)
     {
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     #[Route('/subject', name: 'app_subject')]
@@ -57,19 +60,28 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/subject/edit', name: 'app_subject_edit')]
+    #[Route('/subject/list', name: 'app_subject_list')]
+    public function listSubjects(): Response
+    {
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+
+        return $this->render('subject/list.html.twig', [
+            'subjects' => $subjects,
+        ]);
+    }
+
+    #[Route('/subject/edit/{id}', name: 'app_subject_edit')]
     public function editSubject(Request $request, Subject $subject): Response
     {
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($subject);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Le sujet a été modifié avec succès.');
 
-            return $this->redirectToRoute('app_subject_edit');
+            return $this->redirectToRoute('app_subject_list');
         }
 
         return $this->render('subject/edit.html.twig', [
@@ -101,6 +113,22 @@ class SubjectController extends AbstractController
         }
 
         return $this->render('subject/delete.html.twig', [
+            'subjects' => $subjects,
+        ]);
+    }
+
+    #[Route('/my-subjects', name: 'app_my_subjects')]
+    public function mySubjects(): Response
+    {
+        $user = $this->security->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+
+        $subjects = $user->getSubjects();
+
+        return $this->render('subject/my-subjects.html.twig', [
             'subjects' => $subjects,
         ]);
     }
