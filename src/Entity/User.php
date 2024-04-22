@@ -34,9 +34,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
-    // #[ORM\OneToMany(targetEntity: Theme::class, mappedBy: 'user')]
-    // private Collection $category;
-
     #[ORM\OneToMany(targetEntity: Subject::class, mappedBy: 'owner')]
     private Collection $subjects;
 
@@ -107,14 +104,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
 
         $roles[] = 'ROLE_USER';
-        
+
         return array_unique($roles);
     }
-    
+
     public function setRoles(array $roles): static
     {
         $this->roles = $roles;
-        
+
         return $this;
     }
 
@@ -139,36 +136,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    // /**
-    //  * @return Collection<int, Theme>
-    //  */
-    // public function getCategory(): Collection
-    // {
-    //     return $this->category;
-    // }
-
-    // public function addCategory(Theme $category): static
-    // {
-    //     if (!$this->category->contains($category)) {
-    //         $this->category->add($category);
-    //         $category->setUser($this);
-    //     }
-
-    //     return $this;
-    // }
-
-    // public function removeCategory(Theme $category): static
-    // {
-    //     if ($this->category->removeElement($category)) {
-    //         // set the owning side to null (unless already changed)
-    //         if ($category->getUser() === $this) {
-    //             $category->setUser(null);
-    //         }
-    //     }
-
-    //     return $this;
-    // }
 
     /**
      * @return Collection<int, Subject>
