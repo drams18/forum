@@ -28,7 +28,7 @@
   }
 
   a {
-    color: #dc3545;
+    color: #ffffff;
     text-decoration: none;
   }
 
@@ -112,7 +112,12 @@
           <td>{{ subject.description }}</td>
           <td>
             <div class="d-flex">
-              <button class="btn btn-primary">Modifier le sujet</button>
+              <form
+              method="get"
+              action="{{ path('app_subject_edit_single', { id: subject.id }) }}"
+            >
+              <button type="submit" class="btn btn-primary">Modifier</button>
+            </form>
               <form
                 method="post"
                 action="{{ path('app_subject_delete', { id: subject.id }) }}"
