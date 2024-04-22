@@ -22,7 +22,7 @@ class SubjectFormType extends AbstractType
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
             ])
-            ->add('theme', EntityType::class, [
+            ->add('category', EntityType::class, [
                 'class' => Theme::class,
                 'choice_label' => 'name',
                 'label' => 'Thème',

@@ -23,14 +23,12 @@ class SubjectController extends AbstractController
     }
 
     #[Route('/subject', name: 'app_subject')]
-    public function subject(Request $request): Response
+    public function subject(): Response
     {
         $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
-        $subject = $this->entityManager->getRepository(Subject::class)->findAll();
 
         return $this->render('subject/index.html.twig', [
             'subjects' => $subjects,
-            'subject' => $subject,
         ]);
     }
 
@@ -44,7 +42,6 @@ class SubjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $subject->setCategory($form->get('theme')->getData());
             $subject->setOwner($this->getUser());
 
             $this->entityManager->persist($subject);
@@ -52,7 +49,7 @@ class SubjectController extends AbstractController
 
             $this->addFlash('success', 'Nouveau sujet créé !');
 
-            return $this->redirectToRoute('app_subject_create');
+            return $this->redirectToRoute('app_subject');
         }
 
         return $this->render('subject/create.html.twig', [
@@ -60,17 +57,17 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/subject/list', name: 'app_subject_list')]
-    public function listSubjects(): Response
+    #[Route('/subject/edit', name: 'app_subject_edit_list')]
+    public function editListSubjects(): Response
     {
         $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
-        return $this->render('subject/list.html.twig', [
+        return $this->render('subject/edit-list.html.twig', [
             'subjects' => $subjects,
         ]);
     }
 
-    #[Route('/subject/edit/{id}', name: 'app_subject_edit')]
+    #[Route('/subject/edit/{id}', name: 'app_subject_edit_single')]
     public function editSubject(Request $request, Subject $subject): Response
     {
         $form = $this->createForm(SubjectFormType::class, $subject);
@@ -81,7 +78,7 @@ class SubjectController extends AbstractController
 
             $this->addFlash('success', 'Le sujet a été modifié avec succès.');
 
-            return $this->redirectToRoute('app_subject_list');
+            return $this->redirectToRoute('app_subject');
         }
 
         return $this->render('subject/edit.html.twig', [
@@ -89,47 +86,18 @@ class SubjectController extends AbstractController
         ]);
     }
 
-    #[Route('/subject/delete', name: 'app_subject_delete')]
-    public function deleteSubject(Request $request): Response
+
+    #[Route('/subject/delete/{id}', name: 'app_subject_delete')]
+    public function deleteSubject(Subject $subject): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+        $this->entityManager->remove($subject);
+        $this->entityManager->flush();
 
-        if ($request->isMethod('POST')) {
-            $submittedData = $request->request->all();
-            $subjectId = $submittedData['subject_id'];
+        $this->addFlash(
+            'success',
+            'Suppression effectuée !'
+        );
 
-            $subject = $this->entityManager->getRepository(Subject::class)->find($subjectId);
-
-            if ($subject) {
-                $this->entityManager->remove($subject);
-                $this->entityManager->flush();
-
-                $this->addFlash('success', 'Le sujet a été supprimé avec succès.');
-            } else {
-                $this->addFlash('error', 'Le sujet n\'a pas été trouvé.');
-            }
-
-            return $this->redirectToRoute('app_subject_delete');
-        }
-
-        return $this->render('subject/delete.html.twig', [
-            'subjects' => $subjects,
-        ]);
-    }
-
-    #[Route('/my-subjects', name: 'app_my_subjects')]
-    public function mySubjects(): Response
-    {
-        $user = $this->security->getUser();
-
-        if (!$user) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
-        }
-
-        $subjects = $user->getSubjects();
-
-        return $this->render('subject/my-subjects.html.twig', [
-            'subjects' => $subjects,
-        ]);
+        return $this->redirectToRoute('app_subject');
     }
 }

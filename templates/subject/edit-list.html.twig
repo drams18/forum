@@ -94,7 +94,7 @@
   {% for subject in subjects %}
   <li>
     {{ subject.name }}
-    <a href="{{ path('app_subject_edit', { id: subject.id }) }}">Modifier</a>
+    <a href="{{ path('app_subject_edit_single', { id: subject.id }) }}">Modifier</a>
   </li>
   {% endfor %}
 </ul>

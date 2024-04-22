@@ -27,10 +27,6 @@ class Subject
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner = null;
 
-    #[ORM\ManyToOne(inversedBy: 'subjectsTheme')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Theme $theme = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -80,18 +76,6 @@ class Subject
     public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function getTheme(): ?Theme
-    {
-        return $this->theme;
-    }
-
-    public function setTheme(?Theme $theme): static
-    {
-        $this->theme = $theme;
 
         return $this;
     }
