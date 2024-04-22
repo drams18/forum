@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %} 
+{% block title %}Détails du post{% endblock %} 
+{% block body %}
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+
+<style>
+  .container {
+    margin-top: 50px;
+  }
+
+  .container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{{ path('app_home') }}">Accueil</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Pages</a>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item" href="{{ path('app_theme') }}">Thèmes</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ path('app_subject') }}">Sujets</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      {% if app.user %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_register') }}">Register</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <h2>Liste des sujets existants</h2>
+  <a href="{{ path('app_post_create') }}" class="btn btn-secondary">Créer un Post</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Nom du Post</th>
+        <th scope="col">Contenu</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for post in posts %}
+      <tr>
+        <th scope="row">{{ post.id }}</th>
+        <td>{{ post.name }}</td>
+        <td>{{ post.content }}</td>
+        <td>
+          <div class="d-flex">
+            <form method="get" action="{{ path('app_post_details', { id: post.id }) }}">
+              <button type="submit" class="btn btn-primary">Détails</button>
+            </form>
+            <form method="post" action="{{ path('app_post_delete', { id: post.id }) }}">
+              <input type="hidden" name="post_id" value="{{ post.id }}">
+              <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce post ?')" class="btn btn-danger">Supprimer</button>
+            </form>
+            <form method="get" action="{{ path('app_post_edit', { id: post.id }) }}">
+              <button type="submit" class="btn btn-primary">Modifier</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

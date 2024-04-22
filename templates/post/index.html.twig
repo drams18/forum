@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %} {% block title %}Post{% endblock %} {% block body
+%}
+<head>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+</head>
+
+<style>
+  .container {
+    margin-top: 50px;
+  }
+
+  .container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="{{ path('app_home') }}">Accueil</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNav"
+    aria-controls="navbarNav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href="#"
+          role="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Pages
+        </a>
+        <ul class="dropdown-menu">
+          <li>
+            <a class="dropdown-item" href="{{ path('app_theme') }}">Thèmes</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ path('app_subject') }}">Sujets</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      {% if app.user %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_logout') }}">Logout</a>
+      </li>
+      {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_login') }}">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ path('app_register') }}">Register</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <h1>Créer un nouveau post</h1>
+  <form method="post" action="{{ path('app_post_create') }}">
+    {{ form_start(form) }}
+    <div class="form-group">
+      {{ form_label(form.subject, "Choisissez un sujet :") }}
+      {{ form_widget(form.subject, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(form.name, "Post :") }}
+      {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(form.content, "Contenu :") }}
+      {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Poster</button>
+    {{ form_end(form) }}
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}
