@@ -19,13 +19,11 @@ class PostController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
     private Security $security;
-    private PostRepository $postRepository;
 
     public function __construct(EntityManagerInterface $entityManager, Security $security, PostRepository $postRepository)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
-        $this->postRepository = $postRepository;
     }
 
     #[Route('/posts', name: 'app_post')]
@@ -47,10 +45,8 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setSubject($form->get('subject')->getData());
 
-            $user = $this->security->getUser();
-            $post->setOwner($user);
+            $post->setOwner($this->security->getUser());
             $post->setCreatedAt(new DateTimeImmutable());
             $post->setUpdatedAt(new DateTimeImmutable());
 
