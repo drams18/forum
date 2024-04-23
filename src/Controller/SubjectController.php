@@ -86,7 +86,6 @@ class SubjectController extends AbstractController
         ]);
     }
 
-
     #[Route('/subject/delete/{id}', name: 'app_subject_delete')]
     public function deleteSubject(Subject $subject): Response
     {

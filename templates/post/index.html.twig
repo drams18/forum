@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %} {% block title %}Post{% endblock %} {% block body
+%}
+<head>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+</head>
+
+<style>
+  .container {
+    margin-top: 50px;
+  }
+
+  .container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  a {
+    color: #ffffff;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+{{ component('Navbar') }}
+
+<div class="container">
+  <h1>Créer un nouveau post</h1>
+  <form method="post" action="{{ path('app_post_create') }}">
+    {{ form_start(form) }}
+    <div class="form-group">
+      {{ form_label(form.subject, "Choisissez un sujet :") }}
+      {{ form_widget(form.subject, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(form.name, "Post :") }}
+      {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="form-group">
+      {{ form_label(form.content, "Contenu :") }}
+      {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <button type="submit" class="btn btn-primary">Poster</button>
+    {{ form_end(form) }}
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

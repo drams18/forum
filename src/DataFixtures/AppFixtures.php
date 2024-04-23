@@ -13,16 +13,16 @@ class AppFixtures extends Fixture
 
         $themesData = [
             [
-                'name' => 'Analyse medicale',
-                'description' => 'Description pour Analyse medicale.',
+                'name' => 'Basket-Ball',
+                'description' => 'Sport',
             ],
             [
-                'name' => 'Anatomie vegetale',
-                'description' => 'Description pour Anatomie vegetale.',
+                'name' => 'Football',
+                'description' => 'Sport',
             ],
             [
-                'name' => 'Anatomie animale',
-                'description' => 'Description pour Anatomie animale.',
+                'name' => 'Mangas',
+                'description' => 'Divertissement',
             ],  
         ];
 
