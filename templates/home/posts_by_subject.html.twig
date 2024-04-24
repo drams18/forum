@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Posts par sujet{% endblock %}
+
+{% block body %}
+
+{% include 'components/Head.html.twig' %} 
+{% include 'components/Navbar.html.twig' %} 
+{% include 'components/Header.html.twig' with {'subjects': subjects} %}
+
+<div class="container">
+    <h3>Voici les différents posts pour {{subject.name}} </h3>
+  {% if posts is not empty %}
+    <div class="row">
+      {% for post in posts %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ post.name }}</h5>
+              <p class="card-text">{{ post.content }}</p>
+              <a href="{{ path('app_post_details', {'id': post.id}) }}" class="btn btn-primary">Détails</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Aucun post trouvé pour ce sujet.</p>
+  {% endif %}
+</div>
+{% endblock %}

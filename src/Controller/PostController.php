@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Post;
+use App\Entity\Subject;
 use App\Form\PostFormType;
 use App\Repository\PostRepository;
 use DateTimeImmutable;
@@ -30,9 +31,11 @@ class PostController extends AbstractController
     public function showAllPosts(): Response
     {
         $posts = $this->entityManager->getRepository(Post::class)->findAll();
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         return $this->render('post/show.html.twig',  [
             'posts' => $posts,
+            'subjects' => $subjects,
         ]);
     }
 
@@ -41,6 +44,7 @@ class PostController extends AbstractController
     {
         $post = new Post();
         $form = $this->createForm(PostFormType::class, $post);
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         $form->handleRequest($request);
 
@@ -60,14 +64,18 @@ class PostController extends AbstractController
 
         return $this->render('post/index.html.twig', [
             'form' => $form->createView(),
+            'subjects' => $subjects,
         ]);
     }
 
     #[Route('/post/{id}', name: 'app_post_details')]
     public function showPostDetails(Post $post): Response
     {
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+
         return $this->render('post/post.details.html.twig', [
             'post' => $post,
+            'subjects' => $subjects,
         ]);
     }
 
@@ -87,6 +95,7 @@ class PostController extends AbstractController
     {
         $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setUpdatedAt(new DateTimeImmutable());
@@ -99,6 +108,21 @@ class PostController extends AbstractController
 
         return $this->render('post/edit.html.twig', [
             'form' => $form->createView(),
+            'subjects' => $subjects,
+        ]);
+    }
+
+    #[Route('/posts/by-subject/{id}', name: 'app_posts_by_subject')]
+    public function showBySubject($id): Response
+    {
+        $posts = $this->entityManager->getRepository(Post::class)->findBy(['subject' => $id]);
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+        $subject = $this->entityManager->getRepository(Subject::class)->find($id);
+
+        return $this->render('home/posts_by_subject.html.twig', [
+            'posts' => $posts,
+            'subjects' => $subjects,
+            'subject' => $subject,
         ]);
     }
 }

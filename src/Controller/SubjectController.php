@@ -37,6 +37,8 @@ class SubjectController extends AbstractController
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
 
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+
         $subject = new Subject();
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
@@ -54,6 +56,7 @@ class SubjectController extends AbstractController
 
         return $this->render('subject/create.html.twig', [
             'form' => $form->createView(),
+            'subjects' => $subjects,
         ]);
     }
 
@@ -70,6 +73,8 @@ class SubjectController extends AbstractController
     #[Route('/subject/edit/{id}', name: 'app_subject_edit_single')]
     public function editSubject(Request $request, Subject $subject): Response
     {
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
 
@@ -83,6 +88,7 @@ class SubjectController extends AbstractController
 
         return $this->render('subject/edit.html.twig', [
             'form' => $form->createView(),
+            'subjects' => $subjects,
         ]);
     }
 
