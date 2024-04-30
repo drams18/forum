@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %} {% block title %}Comment{% endblock %} {% block
+body %} {% include 'components/Head.html.twig' %} {% include
+'components/Navbar.html.twig' %} {% include 'components/Header.html.twig' with
+{'subjects': subjects} %}
+
+<h1>{{ post.name }}</h1>
+<p>{{ post.content }}</p>
+<br />
+<h4>Ajoutez un commentaire :</h4>
+
+{{ form_start(comment_form) }}
+{{ form_label(comment_form.content) }}
+{{ form_widget(comment_form.content, {'attr': {'class': 'form-control'}}) }}
+{{ form_errors(comment_form.content) }}
+<button type="submit" class="btn btn-primary">Commenter</button>
+
+{{ form_end(comment_form) }}
+<br />
+
+{% if postComments is not empty %}
+<ul>
+  {% for comment in postComments %}
+  <li>{{ comment.content }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Aucun commentaire pour le moment.</p>
+{% endif %} 
+
+{% endblock %}

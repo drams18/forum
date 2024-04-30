@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Post;
 use App\Entity\Subject;
+use App\Form\CommentFormType;
 use App\Form\PostFormType;
 use App\Repository\PostRepository;
 use DateTimeImmutable;
@@ -123,6 +125,42 @@ class PostController extends AbstractController
             'posts' => $posts,
             'subjects' => $subjects,
             'subject' => $subject,
+        ]);
+    }
+
+    #[Route('/post/comments/{id}', name: 'app_post_comments')]
+    public function postComments(int $id, Request $request): Response
+    {
+        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+        $post = $this->entityManager->getRepository(Post::class)->find($id);
+
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentFormType::class);
+
+        $commentForm->handleRequest($request);
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $commentContent = $commentForm->get('content')->getData();
+            if (!empty($commentContent)) {
+                $comment->setPost($post);
+                $comment->setAuthor($this->getUser());
+                $comment->setContent($commentContent);
+                
+                $this->entityManager->persist($comment);
+                $this->entityManager->flush();
+                
+                return $this->redirectToRoute('app_post_comments', ['id' => $id]);
+            } else {
+                $this->addFlash('error', 'Le contenu du commentaire ne peut pas être vide.');
+            }
+
+        }
+        $comments = $post->getComments();
+
+        return $this->render('post/comments.html.twig', [
+            'post' => $post,
+            'comment_form' => $commentForm->createView(),
+            'subjects' => $subjects,
+            'postComments' => $comments
         ]);
     }
 }

@@ -16,6 +16,7 @@
                         <th scope="col">Contenu du Commentaire</th>
                         <th scope="col">ID du Post</th>
                         <th scope="col">ID de l'Auteur</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,6 +26,18 @@
                         <td>{{ comment.content }}</td>
                         <td>{{ comment.post.id }}</td>
                         <td>{{ comment.author.id }}</td>
+                        <td>
+                            <div class="d-flex">
+                                <form class="d-flex" action="{{ path('app_comment_edit', {'id': comment.id}) }}" method="get">
+                                    <button type="submit" class="btn btn-primary me-1">Modifier</button>
+                                </form>
+                                <form action="{{ path('app_comment_delete', {'id': comment.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire ?');">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </form>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>

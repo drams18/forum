@@ -31,3 +31,13 @@ app_subject_edit:
 app_theme:
     path: /theme
     controller: App\Controller\ThemeController::theme
+
+app_comment_add:
+    path: /comment/add/{postId}
+    controller: App\Controller\CommentController::comment
+    methods: ['GET', 'POST']
+
+app_post_comments:
+    path: /post/comments/{id}
+    controller: App\Controller\PostController::postComments
+    methods: ['GET', 'POST']

@@ -1,26 +1,22 @@
-{% extends 'base.html.twig' %} {% block title %}Home{% endblock %} {% block
-body %}
-
-{% include 'components/Head.html.twig' %} 
-{% include 'components/Navbar.html.twig' %} 
-{% include 'components/Header.html.twig' with {'subjects': subjects} %}
+{% extends 'base.html.twig' %} {% block title %}Home{% endblock %} {% block body
+%} {% include 'components/Head.html.twig' %} {% include
+'components/Navbar.html.twig' %} {% include 'components/Header.html.twig' with
+{'subjects': subjects} %} 
 
 <br />
 <br />
 <br />
 <div class="d-flex flex-row justify-content-start">
   {% for post in posts %}
-  <a href="{{ path('app_post_details', {'id': post.id}) }}" style="text-decoration: none; color: inherit;">
-    <div class="card" style="width: 18rem; margin-right: 10px;">
+    <div class="card" style="width: 18rem; margin-right: 10px">
       <div class="card-body">
         <h5 class="card-title">{{ post.name }}</h5>
         <p class="card-text">{{ post.content }}</p>
+        <a href="{{ path('app_post_comments', { id: post.id }) }}" class="btn btn-primary">Commenter</a>
       </div>
     </div>
-  </a>
   {% endfor %}
 </div>
-
 
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -28,3 +24,14 @@ body %}
   crossorigin="anonymous"
 ></script>
 {% endblock %}
+
+
+      {# {% if comments|length > 0 %}
+      <ul>
+        {% for comment in comments %} {% if comment.post == post %}
+        <li>{{ comment.content }}</li>
+        {% endif %} {% endfor %}
+      </ul>
+      {% else %}
+      <p>Aucun commentaire pour le moment.</p>
+      {% endif %} #}

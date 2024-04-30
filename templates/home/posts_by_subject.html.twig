@@ -19,6 +19,7 @@
               <h5 class="card-title">{{ post.name }}</h5>
               <p class="card-text">{{ post.content }}</p>
               <a href="{{ path('app_post_details', {'id': post.id}) }}" class="btn btn-primary">Détails</a>
+              <a href="{{ path('app_post_comments', { id: post.id }) }}" class="btn btn-primary">Commenter</a>
             </div>
           </div>
         </div>

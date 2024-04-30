@@ -30,6 +30,7 @@ class HomeController extends AbstractController
         $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
         $posts = $this->entityManager->getRepository(Post::class)->findAll();
 
+
         return $this->render('home/index.html.twig', [
             'subjects' => $subjects,
             'posts' => $posts,
