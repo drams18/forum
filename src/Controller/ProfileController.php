@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Post;
 use App\Entity\Subject;
 use App\Form\UserProfileFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,10 +23,14 @@ class ProfileController extends AbstractController
     #[Route('/profile', name: 'app_profile')]
     public function profilePage(): Response
     {
+        $user = $this->getUser();
+
         $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
+        $posts = $this->entityManager->getRepository(Post::class)->findBy(['owner' => $user]);
 
         return $this->render('profile/index.html.twig', [
             'subjects' => $subjects,
+            'posts' => $posts,
         ]);
     }
 

@@ -1,20 +1,54 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Profil{% endblock %}
-
-{% block stylesheets %}
-{% endblock %}
-
-{% block body %}
-{% include 'components/Head.html.twig' %} 
-{% include 'components/Navbar.html.twig' %} 
-{% include 'components/Header.html.twig' with {'subjects': subjects} %}
+{% extends 'base.html.twig' %} {% block title %}Profil{% endblock %} {% block
+stylesheets %} {% endblock %} {% block body %} {% include
+'components/Head.html.twig' %} {% include 'components/Navbar.html.twig' %} {%
+include 'components/Header.html.twig' with {'subjects': subjects} %}
 <div class="container">
-    <h3>Profil</h3>
-    <p>Nom: {{ app.user.name }}</p>
-    <p>Nom d'utilisateur: {{ app.user.username }}</p>
-    <p>Email: {{ app.user.email }}</p>
-    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Modifier le profil</a>
+  <h3>Profil</h3>
+  <p>Nom: {{ app.user.name }}</p>
+  <p>Nom d'utilisateur: {{ app.user.username }}</p>
+  <p>Email: {{ app.user.email }}</p>
+  <a href="{{ path('app_profile_edit') }}" class="btn btn-outline-info"
+    >Modifier le profil</a
+  >
 </div>
+<br />
 
-{% endblock %}
+<div class="">
+  <p>
+    Voici les différents posts que vous avez créés au sein de ce forum :
+  </p>
+</div>
+{% for post in posts %}
+<div class="col-md-4 mb-4 ms-5">
+  <div class="card h-100">
+    <div class="card-body ">
+      <h5 class="card-title">{{ post.name }}</h5>
+      <p class="card-text">{{ post.content }}</p>
+    </div>
+    <div class="d-flex justify-content-evenly">
+      <form
+        method="get"
+        action="{{ path('app_post_details', { id: post.id }) }}"
+      >
+        <button type="submit" class="btn btn-dark">Détails</button>
+      </form>
+      <form
+        method="post"
+        action="{{ path('app_post_delete', { id: post.id }) }}"
+      >
+        <input type="hidden" name="post_id" value="{{ post.id }}" />
+        <button
+          type="submit"
+          onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce post ?')"
+          class="btn btn-danger"
+        >
+          Supprimer
+        </button>
+      </form>
+      <form method="get" action="{{ path('app_post_edit', { id: post.id }) }}">
+        <button type="submit" class="btn btn-primary">Modifier</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endblock %}

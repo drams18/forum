@@ -17,7 +17,7 @@
           <th scope="col">#</th>
           <th scope="col">Nom du Sujet</th>
           <th scope="col">Description</th>
-          <th scope="col">Action</th>
+          {# <th scope="col">Action</th> #}
         </tr>
       </thead>
       <tbody>
@@ -26,7 +26,7 @@
           <th scope="row">{{ subject.id }}</th>
           <td>{{ subject.name }}</td>
           <td>{{ subject.description }}</td>
-          <td>
+          {# <td>
             <div class="d-flex">
               <form
               method="get"
@@ -46,7 +46,7 @@
                 <button type="submit" class="btn btn-danger"> Supprimer</button>
               </form>
             </div>
-          </td>
+          </td> #}
         </tr>
         {% endfor %}
       </tbody>
