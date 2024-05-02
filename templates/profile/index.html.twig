@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil{% endblock %}
+
+{% block stylesheets %}
+{% endblock %}
+
+{% block body %}
+{% include 'components/Head.html.twig' %} 
+{% include 'components/Navbar.html.twig' %} 
+{% include 'components/Header.html.twig' with {'subjects': subjects} %}
+<div class="container">
+    <h3>Profil</h3>
+    <p>Nom: {{ app.user.name }}</p>
+    <p>Nom d'utilisateur: {{ app.user.username }}</p>
+    <p>Email: {{ app.user.email }}</p>
+    <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">Modifier le profil</a>
+</div>
+
+{% endblock %}

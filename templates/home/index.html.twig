@@ -1,21 +1,49 @@
 {% extends 'base.html.twig' %} {% block title %}Home{% endblock %} {% block body
 %} {% include 'components/Head.html.twig' %} {% include
 'components/Navbar.html.twig' %} {% include 'components/Header.html.twig' with
-{'subjects': subjects} %} 
+{'subjects': subjects} %}
 
-<br />
-<br />
-<br />
-<div class="d-flex flex-row justify-content-start">
-  {% for post in posts %}
-    <div class="card" style="width: 18rem; margin-right: 10px">
-      <div class="card-body">
-        <h5 class="card-title">{{ post.name }}</h5>
-        <p class="card-text">{{ post.content }}</p>
-        <a href="{{ path('app_post_comments', { id: post.id }) }}" class="btn btn-primary">Commenter</a>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <p class="lead text-center">
+        Bienvenue sur notre forum {{ app.user.username }}.
+      </p>
+      <figure class="text-center">
+        <blockquote class="blockquote">
+          <p>
+            Voici la liste des posts existants sur le forum, ils sont
+            catégorisés par sujets.
+          </p>
+          <p>
+            Vous pouvez voir les détails des posts, les commenter puis gérer les
+            posts et sujets depuis les options.
+          </p>
+        </blockquote>
+        <figcaption class="blockquote-footer">
+          Les sujets sont listés en-tête de page.
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    {% for post in posts %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ post.name }}</h5>
+          <p class="card-text">{{ post.content }}</p>
+          <a
+            href="{{ path('app_post_comments', { id: post.id }) }}"
+            class="btn btn-primary"
+            >Participer à ce post</a
+          >
+        </div>
       </div>
     </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 </div>
 
 <script
@@ -24,14 +52,3 @@
   crossorigin="anonymous"
 ></script>
 {% endblock %}
-
-
-      {# {% if comments|length > 0 %}
-      <ul>
-        {% for comment in comments %} {% if comment.post == post %}
-        <li>{{ comment.content }}</li>
-        {% endif %} {% endfor %}
-      </ul>
-      {% else %}
-      <p>Aucun commentaire pour le moment.</p>
-      {% endif %} #}
