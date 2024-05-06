@@ -9,24 +9,26 @@
 {% include 'components/Header.html.twig' with {'subjects': subjects} %}
 
 <div class="container">
-    <h3>Voici les différents posts pour {{subject.name}} </h3>
+  <h3 class="mb-4 text-center">Voici les différents posts pour {{ subject.name }}</h3>
   {% if posts is not empty %}
-    <div class="row">
-      {% for post in posts %}
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ post.name }}</h5>
-              <p class="card-text">{{ post.content }}</p>
-              <a href="{{ path('app_post_details', {'id': post.id}) }}" class="btn btn-primary">Détails</a>
-              <a href="{{ path('app_post_comments', { id: post.id }) }}" class="btn btn-primary">Commenter</a>
-            </div>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
+      <div class="row row-cols-1 row-cols-md-3 g-4">
+          {% for post in posts %}
+              <div class="col">
+                  <div class="card h-100 shadow">
+                      <div class="card-body">
+                          <h5 class="card-title">{{ post.name }}</h5>
+                          <p class="card-text">{{ post.content }}</p>
+                      </div>
+                      <div class="card-footer d-flex justify-content-between">
+                          <a href="{{ path('app_post_details', {'id': post.id}) }}" class="btn btn-primary">Détails</a>
+                          <a href="{{ path('app_post_comments', { 'id': post.id }) }}" class="btn btn-primary">Commenter</a>
+                      </div>
+                  </div>
+              </div>
+          {% endfor %}
+      </div>
   {% else %}
-    <p>Aucun post trouvé pour ce sujet.</p>
+      <p class="text-center">Aucun post trouvé pour ce sujet.</p>
   {% endif %}
 </div>
 {% endblock %}

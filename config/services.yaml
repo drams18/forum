@@ -15,3 +15,5 @@ services:
             - '../src/Tests/'
             - '../src/Validator/'
     App\Entity\Subject: ~
+    App\Twig\ProjectTwigExtension:
+        tags: ['twig.extension']

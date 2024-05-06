@@ -4,9 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Subject;
 use App\Form\SubjectFormType;
+use App\Twig\ProjectTwigExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,30 +14,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class SubjectController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
-    private $security;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->security = $security;
     }
 
     #[Route('/subject', name: 'app_subject')]
     public function subject(): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
-        return $this->render('subject/index.html.twig', [
-            'subjects' => $subjects,
-        ]);
+        return $this->render('subject/index.html.twig', []);
     }
 
     #[Route('/subject/create', name: 'app_subject_create')]
     public function addSubject(Request $request): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         $subject = new Subject();
         $form = $this->createForm(SubjectFormType::class, $subject);
@@ -56,25 +49,18 @@ class SubjectController extends AbstractController
 
         return $this->render('subject/create.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 
     #[Route('/subject/edit', name: 'app_subject_edit_list')]
     public function editListSubjects(): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
-
-        return $this->render('subject/edit-list.html.twig', [
-            'subjects' => $subjects,
-        ]);
+        return $this->render('subject/edit-list.html.twig', []);
     }
 
     #[Route('/subject/edit/{id}', name: 'app_subject_edit_single')]
     public function editSubject(Request $request, Subject $subject): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
-
         $form = $this->createForm(SubjectFormType::class, $subject);
         $form->handleRequest($request);
 
@@ -88,7 +74,6 @@ class SubjectController extends AbstractController
 
         return $this->render('subject/edit.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 

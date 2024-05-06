@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Post;
 use App\Entity\Subject;
 use App\Form\UserProfileFormType;
+use App\Twig\ProjectTwigExtension;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,12 +25,9 @@ class ProfileController extends AbstractController
     public function profilePage(): Response
     {
         $user = $this->getUser();
-
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
         $posts = $this->entityManager->getRepository(Post::class)->findBy(['owner' => $user]);
-
+    
         return $this->render('profile/index.html.twig', [
-            'subjects' => $subjects,
             'posts' => $posts,
         ]);
     }
@@ -38,7 +36,6 @@ class ProfileController extends AbstractController
     public function profileEdit(Request $request): Response
     {
         $user = $this->getUser();
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         $form = $this->createForm(UserProfileFormType::class, $user);
         $form->handleRequest($request);
@@ -52,7 +49,6 @@ class ProfileController extends AbstractController
     
         return $this->render('profile/edit.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 }

@@ -7,7 +7,7 @@ use App\Entity\Post;
 use App\Entity\Subject;
 use App\Form\CommentFormType;
 use App\Form\PostFormType;
-use App\Repository\PostRepository;
+use App\Twig\ProjectTwigExtension;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +23,7 @@ class PostController extends AbstractController
     private EntityManagerInterface $entityManager;
     private Security $security;
 
-    public function __construct(EntityManagerInterface $entityManager, Security $security, PostRepository $postRepository)
+    public function __construct(EntityManagerInterface $entityManager, Security $security)
     {
         $this->entityManager = $entityManager;
         $this->security = $security;
@@ -33,11 +33,9 @@ class PostController extends AbstractController
     public function showAllPosts(): Response
     {
         $posts = $this->entityManager->getRepository(Post::class)->findAll();
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         return $this->render('post/show.html.twig',  [
             'posts' => $posts,
-            'subjects' => $subjects,
         ]);
     }
 
@@ -46,7 +44,6 @@ class PostController extends AbstractController
     {
         $post = new Post();
         $form = $this->createForm(PostFormType::class, $post);
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         $form->handleRequest($request);
 
@@ -66,18 +63,15 @@ class PostController extends AbstractController
 
         return $this->render('post/index.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 
     #[Route('/post/{id}', name: 'app_post_details')]
     public function showPostDetails(Post $post): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         return $this->render('post/post.details.html.twig', [
             'post' => $post,
-            'subjects' => $subjects,
         ]);
     }
 
@@ -97,7 +91,6 @@ class PostController extends AbstractController
     {
         $form = $this->createForm(PostFormType::class, $post);
         $form->handleRequest($request);
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setUpdatedAt(new DateTimeImmutable());
@@ -110,7 +103,6 @@ class PostController extends AbstractController
 
         return $this->render('post/edit.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 
@@ -118,12 +110,10 @@ class PostController extends AbstractController
     public function showBySubject($id): Response
     {
         $posts = $this->entityManager->getRepository(Post::class)->findBy(['subject' => $id]);
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
         $subject = $this->entityManager->getRepository(Subject::class)->find($id);
 
         return $this->render('home/posts_by_subject.html.twig', [
             'posts' => $posts,
-            'subjects' => $subjects,
             'subject' => $subject,
         ]);
     }
@@ -131,7 +121,6 @@ class PostController extends AbstractController
     #[Route('/post/comments/{id}', name: 'app_post_comments')]
     public function postComments(int $id, Request $request): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
         $post = $this->entityManager->getRepository(Post::class)->find($id);
 
         $comment = new Comment();
@@ -159,7 +148,6 @@ class PostController extends AbstractController
         return $this->render('post/comments.html.twig', [
             'post' => $post,
             'comment_form' => $commentForm->createView(),
-            'subjects' => $subjects,
             'postComments' => $comments
         ]);
     }

@@ -7,35 +7,40 @@
 {% include 'components/Header.html.twig' with {'subjects': subjects} %}
 
 <div class="container">
-  <h2>Liste des posts existants</h2>
-  <a href="{{ path('app_post_create') }}" class="btn btn-secondary">Créer un Post</a>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Nom du Post</th>
-        <th scope="col">Contenu</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for post in posts %}
-      <tr>
-        <th scope="row">{{ post.id }}</th>
-        <td>{{ post.name }}</td>
-        <td>{{ post.content }}</td>
-        <td>
-          <div class="d-flex">
-            <form method="get" action="{{ path('app_post_details', { id: post.id }) }}">
-              <button type="submit" class="btn btn-primary">Détails</button>
-            </form>
-          </div>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <h2 class="mb-4">Liste des posts existants</h2>
+  <div class="d-flex justify-content-end mb-4">
+      <a href="{{ path('app_post_create') }}" class="btn btn-secondary">Créer un Post</a>
+  </div>
+  <div class="table-responsive">
+      <table class="table table-striped">
+          <thead>
+              <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Nom du Post</th>
+                  <th scope="col">Contenu</th>
+                  <th scope="col">Action</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for post in posts %}
+                  <tr>
+                      <th scope="row">{{ post.id }}</th>
+                      <td>{{ post.name }}</td>
+                      <td>{{ post.content }}</td>
+                      <td>
+                          <div class="d-flex justify-content-center">
+                              <form method="get" action="{{ path('app_post_details', { id: post.id }) }}">
+                                  <button type="submit" class="btn btn-primary me-2">Détails</button>
+                              </form>
+                          </div>
+                      </td>
+                  </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+  </div>
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

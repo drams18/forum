@@ -26,11 +26,9 @@ class CommentController extends AbstractController
     public function allComments(): Response
     {
         $comments = $this->entityManager->getRepository(Comment::class)->findAll();
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
 
         return $this->render('comment/dashboard.html.twig', [
             'comments' => $comments,
-            'subjects' => $subjects,
         ]);
     }
     #[Route('/comment/add/{postId}', name: 'app_comment_add', methods: ['POST'])]
@@ -42,27 +40,26 @@ class CommentController extends AbstractController
         if (!$post) {
             throw $this->createNotFoundException('Post not found');
         }
-    
+
         $comment = new Comment();
         $comment->setPost($post);
         $comment->setAuthor($this->getUser());
-    
+
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($comment);
             $this->entityManager->flush();
-    
+
             return $this->redirectToRoute('app_post_details', ['id' => $postId]);
         }
-    
+
         $comments = $post->getComments();
-    
+
         return $this->render('comment/index.html.twig', [
             'form' => $form->createView(),
             'post' => $post,
-            'subjects' => $subjects,
             'comments' => $comments,
         ]);
     }
@@ -83,20 +80,18 @@ class CommentController extends AbstractController
         if (!$comment) {
             throw $this->createNotFoundException('Comment not found');
         }
-    
+
         $form = $this->createForm(CommentFormType::class, $comment);
         $form->handleRequest($request);
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
-    
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
-    
+
             return $this->redirectToRoute('app_comment');
         }
-    
+
         return $this->render('comment/edit.html.twig', [
             'form' => $form->createView(),
-            'subjects' => $subjects,
         ]);
     }
 }
