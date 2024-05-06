@@ -34,7 +34,6 @@ class CommentController extends AbstractController
     #[Route('/comment/add/{postId}', name: 'app_comment_add', methods: ['POST'])]
     public function comment(Request $request, int $postId): Response
     {
-        $subjects = $this->entityManager->getRepository(Subject::class)->findAll();
         $post = $this->entityManager->getRepository(Post::class)->find($postId);
 
         if (!$post) {
