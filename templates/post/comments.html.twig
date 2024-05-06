@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+{% block title %}Forum - {{ post.name }}{% endblock %} 
+{% block body %} 
+
+{% include 'components/Head.html.twig' %} 
+{% include 'components/Navbar.html.twig' %} 
+{% include 'components/Header.html.twig' with {'subjects': subjects} %}
+
+<div class="container mt-4">
+  <div class="row justify-content-center align-items-center">
+    <div class="col-md-8">
+        <h1>{{ post.name }}</h1>
+    </div>
+</div>
+
+
+    <div class="container mt-4">
+      <div class="row">
+          <div class="col-md-8 offset-md-2">
+              <h4>Commentaires</h4>
+              <br>
+              {% if postComments is not empty %}
+                  <ul class="list-group">
+                      {% for comment in postComments %}
+                          <li class="list-group-item">
+                              <div class="d-flex justify-content-between align-items-center">
+                                  <div>
+                                    <small>Par {{ comment.author.username }}</small>
+                                    <p style="margin-left: 5em;">{{ comment.content }}</p>
+                                  </div>
+                              </div>
+                          </li>
+                      {% endfor %}
+                  </ul>
+              {% else %}
+                  <p>Aucun commentaire pour le moment.</p>
+              {% endif %}
+          </div>
+      </div>
+  </div>
+  
+
+  <div class="container mt-4">
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <br>
+            <h4>Ajouter un commentaire</h4>
+            {{ form_start(comment_form) }}
+                <div class="form-group">
+                    {{ form_label(comment_form.content) }}
+                    {{ form_widget(comment_form.content, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+                    {{ form_errors(comment_form.content) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            {{ form_end(comment_form) }}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
